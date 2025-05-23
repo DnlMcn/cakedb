@@ -2,11 +2,16 @@
 name = "ezdb"
 version = "0.1.0"
 edition = "2021"
+authors = ["DnlMcn <haomakk.himself@gmail.com>"]
+description = "An easy-to-use wrapper over `redb`"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["database", "embedded", "easy", "redb"]
+categories = ["database-interfaces"]
 
 [dependencies]
 anyhow = "1.0.98"
 bincode = "2.0.1"
-colored = "3.0.0"
 derive_more = { version = "2.0.1", features = ["debug"] }
 directories = "6.0.0"
 redb = "2.6.0"
