@@ -1,6 +1,7 @@
 # CakeDb
 
-A small wrapper over [redb](https://crates.io/crates/redb) (a simple, portable, high-performance, ACID, embedded key-value store). The API is a piece of cake, so you can work on your business logic and worry less about the database.
+A small wrapper over [redb](https://crates.io/crates/redb) (a simple, portable, high-performance, ACID, embedded key-value store).
+The API is a piece of cake, so you can work on your business logic and worry less about the database.
 
 ## Features
 

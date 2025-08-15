@@ -1,6 +1,7 @@
 use anyhow::anyhow;
 use redb::{
-    MultimapTableDefinition, ReadOnlyMultimapTable, ReadOnlyTable, ReadableDatabase, TableDefinition, TableError
+    MultimapTableDefinition, ReadOnlyMultimapTable, ReadOnlyTable, ReadableDatabase,
+    TableDefinition, TableError,
 };
 
 use crate::{bincode_wrapper::Bincode, CakeDb};
@@ -50,7 +51,7 @@ impl CakeDb {
     /// Opens the given multimap table as read-only and returns it.
     pub(super) fn read_multimap_table<K, V>(
         &self,
-        table: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
+        table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
     ) -> Result<ReadOnlyMultimapTable<Bincode<K>, Bincode<V>>, Box<dyn std::error::Error>>
     where
         K: DbKey,
@@ -59,8 +60,8 @@ impl CakeDb {
         Ok(self
             .inner
             .begin_read()
-            .map_err(|e| anyhow!("failed to begin read for '{table}': {e}"))?
-            .open_multimap_table(table)
-            .map_err(|e| anyhow!("failed to open table for '{table}': {e}"))?)
+            .map_err(|e| anyhow!("failed to begin read for '{table_def}': {e}"))?
+            .open_multimap_table(table_def)
+            .map_err(|e| anyhow!("failed to open table for '{table_def}': {e}"))?)
     }
 }

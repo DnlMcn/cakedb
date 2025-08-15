@@ -5,15 +5,19 @@ use time::UtcDateTime;
 
 use crate::CakeDb;
 
+/// Metadata for a savepoint stored in memory.
 pub struct CakeSavepoint {
+    /// The underlying `redb` savepoint.
     pub savepoint: Savepoint,
+    /// When the savepoint was created.
     pub creation_time: UtcDateTime,
 }
 
 impl CakeDb {
-    /// Creates a new savepoint and returns its key. The savepoint is stored in-memory inside the struct itself, not in the database.
+    /// Creates a new savepoint and returns its key.
     ///
-    /// These savepoints are ephemeral; they will become invalid if the `CakeDb` reference is dropped.
+    /// The savepoint is stored in memory inside the struct itself, not in the database.
+    /// These savepoints are ephemeral and become invalid if the [`CakeDb`] instance is dropped.
     pub fn savepoint(&mut self) -> Result<usize, Box<dyn std::error::Error>> {
         let write = self.inner.begin_write()?;
         let savepoint = write.ephemeral_savepoint()?;
