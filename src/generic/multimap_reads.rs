@@ -10,7 +10,7 @@ impl CakeDb {
     /// Returns all values mapped to the given key.
     pub fn multimap_get<K, V>(
         &self,
-        table: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
+        table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
         key: &K,
     ) -> Result<BTreeSet<V>, Box<dyn std::error::Error>>
     where
@@ -18,7 +18,7 @@ impl CakeDb {
         V: DbValue + Ord,
     {
         Ok(self
-            .read_multimap_table(table)?
+            .read_multimap_table(table_def)?
             .get(key)?
             .flatten()
             .map(|vg| vg.value())
@@ -28,14 +28,14 @@ impl CakeDb {
     /// Returns all key-value mappings in the given table.
     pub fn multimap_table<K, V>(
         &self,
-        table: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
+        table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
     ) -> Result<BTreeMap<K, BTreeSet<V>>, Box<dyn std::error::Error>>
     where
         K: DbKey,
         V: DbValue + Ord,
     {
         Ok(self
-            .read_multimap_table(table)?
+            .read_multimap_table(table_def)?
             .iter()?
             .flatten()
             .map(|(key_ag, value_ag)| {

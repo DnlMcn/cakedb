@@ -41,7 +41,7 @@ impl CakeDb {
     /// Inserts a key-value pair into the table.
     ///
     /// If the map had this key present, its value will be overwritten by the new value.
-    /// 
+    ///
     /// Returns the old value.
     pub fn insert<K, V>(
         &mut self,

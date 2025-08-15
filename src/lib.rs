@@ -8,13 +8,15 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use redb::{Database};
+use redb::Database;
 use save::CakeSavepoint;
 use tempfile::NamedTempFile;
 
 /// Represents a high-level database encapsulation that handles interactions with the underlying storage.
 ///
-/// Usage of the provided methods is encouraged, but if you need to do anything more advanced, you can use the `database` and `mut_database` methods to access the `redb` database directly.
+/// Usage of the provided methods is encouraged, but if you need more control,
+/// the [`database`](Self::database) and [`mut_database`](Self::mut_database)
+/// methods expose the underlying `redb::Database`.
 ///
 /// # Examples
 /// ```
@@ -77,7 +79,9 @@ pub struct CakeDb {
 impl CakeDb {
     /// Initializes the database, or creates it if it doesn't exist.
     ///
-    /// If you are just testing the crate, you can also use the `new_test_db` method, or use your PC's default Data path by calling the provided `data_local_path` function.
+    /// If you're just testing the crate, consider the [`new_test_db`](Self::new_test_db)
+    /// method, or obtain your machine's default data path with
+    /// [`data_local_path`](crate::data_local_path).
     pub fn new(path: impl AsRef<Path>) -> Result<Self, redb::DatabaseError> {
         Ok(Self {
             inner: Database::create(path)?,
@@ -127,12 +131,12 @@ impl CakeDb {
 
 /// Returns the path to your computer's local data directory.
 ///
-/// |Platform | Value                                                                      | Example                                                       |
-/// | ------- | -------------------------------------------------------------------------- | ------------------------------------------------------------- |
-/// | Linux   | `$XDG_DATA_HOME`/`_project_path_` or `$HOME`/.local/share/`_project_path_` | /home/alice/.local/share/ezdb                               |
-/// | macOS   | `$HOME`/Library/Application Support/`_project_path_`                       | /Users/Alice/Library/Application Support/EzDb |
-/// | Windows | `{FOLDERID_LocalAppData}`\\`_project_path_`\\data                          | C:\Users\Alice\AppData\Local\EzDb\data            |
+/// | Platform | Value                                                             | Example                                               |
+/// | ------- | ----------------------------------------------------------------- | ----------------------------------------------------- |
+/// | Linux   | `$XDG_DATA_HOME`/`cakedb` or `$HOME`/.local/share/`cakedb`         | `/home/alice/.local/share/cakedb`                     |
+/// | macOS   | `$HOME`/Library/Application Support/`cakedb`                       | `/Users/Alice/Library/Application Support/cakedb`     |
+/// | Windows | `{FOLDERID_LocalAppData}`\`cakedb`\data                          | `C:\Users\Alice\AppData\Local\cakedb\data` |
 pub fn data_local_path() -> Option<PathBuf> {
-    directories::ProjectDirs::from("", "", "EzDb")
+    directories::ProjectDirs::from("", "", "cakedb")
         .map(|db_dir| db_dir.data_local_dir().to_path_buf())
 }
