@@ -40,8 +40,7 @@ use tempfile::NamedTempFile;
 ///     // In production, use the `new` method instead of `new_test_db`.
 ///     let mut db = CakeDb::new_test_db()?;
 ///
-///     // The savepoint is stored inside the struct so it's not dropped;
-///     // we only receive the key.
+///     // The savepoint is stored inside the struct, we only receive its key.
 ///     let save_key = db.savepoint()?;
 ///
 ///     let var = TestStruct::new(2, "two".to_string());
@@ -57,8 +56,8 @@ use tempfile::NamedTempFile;
 ///         (7, TestStruct::new(12, "twelve".into())),
 ///     ];
 ///
-///     // These batch functions take any data structure that can turn into an iter over `(K, V)`
-///     // A `BTreeMap<K, V>` would also work here, for example
+///     // These batch functions take any data structure that can turn into an iter over `(K, V)` for `pairs`
+///     // A `BTreeMap` would also work here, for example
 ///     db.batch_insert(TABLE, pairs)?;
 ///     assert_eq!(db.filter(TABLE, |_, v| v.b.contains("e"))?.len(), 3);
 ///

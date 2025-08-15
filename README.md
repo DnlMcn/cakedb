@@ -31,17 +31,17 @@ const TABLE: TableDefinition<Bincode<u32>, Bincode<TestStruct>> =
         TableDefinition::new("test_table");
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // In production, use the `new` method instead of `new_test_db`.
     let mut db = CakeDb::new_test_db()?;
 
-    // The savepoint is stored inside the struct so it's not dropped;
-    // we only receive its key.
+    // The savepoint is stored inside the struct, we only receive its key.
     let save_key = db.savepoint()?;
 
     let var = TestStruct::new(2, "two".to_string());
     db.insert(TABLE, &1, var)?;
     assert!(db.get(TABLE, &1)?.is_some());
 
-    // Edits and filters use closures.
+    // Edits and predicates use closures.
     db.edit(TABLE, &1, |v| v.b.push_str(" (edited)"))?;
     assert_eq!(db.get(TABLE, &1)?.unwrap().b, "two (edited)");
 
