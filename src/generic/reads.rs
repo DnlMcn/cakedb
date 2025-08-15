@@ -2,12 +2,12 @@ use std::collections::BTreeMap;
 
 use redb::{ReadableTable, TableDefinition};
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
-    /// Returns the value of the given key, if it exists.
+impl CakeDb {
+    /// Returns the value if it exists.
     pub fn get<K, V>(
         &self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
@@ -69,7 +69,7 @@ impl EzDb {
     ///
     /// If there are less than `n` matching pairs, returns `None`.
     ///
-    /// This function assumes zero-indexing (i.e. the first value is `n = 0`).
+    /// This function assumes zero-indexing for `n` (e.g. to get the third k-v pair, `n` should be 2).
     pub fn find_nth<K, V>(
         &self,
         n: usize,

@@ -3,17 +3,17 @@ use std::collections::BTreeMap;
 use redb::Savepoint;
 use time::UtcDateTime;
 
-use crate::EzDb;
+use crate::CakeDb;
 
-pub struct EzSavepoint {
+pub struct CakeSavepoint {
     pub savepoint: Savepoint,
     pub creation_time: UtcDateTime,
 }
 
-impl EzDb {
-    /// Creates a new savepoint and returns its key.
+impl CakeDb {
+    /// Creates a new savepoint and returns its key. The savepoint is stored in-memory inside the struct itself, not in the database.
     ///
-    /// These savepoints are ephemeral; they will become invalid if the `Db` is dropped.
+    /// These savepoints are ephemeral; they will become invalid if the `CakeDb` reference is dropped.
     pub fn savepoint(&mut self) -> Result<usize, Box<dyn std::error::Error>> {
         let write = self.inner.begin_write()?;
         let savepoint = write.ephemeral_savepoint()?;
@@ -28,7 +28,7 @@ impl EzDb {
 
         self.savepoints.insert(
             key,
-            EzSavepoint {
+            CakeSavepoint {
                 savepoint,
                 creation_time: UtcDateTime::now(),
             },
@@ -56,7 +56,7 @@ impl EzDb {
     }
 
     /// Returns a map of the currently stored savepoints.
-    pub const fn savepoints(&self) -> &BTreeMap<usize, EzSavepoint> {
+    pub const fn savepoints(&self) -> &BTreeMap<usize, CakeSavepoint> {
         &self.savepoints
     }
 

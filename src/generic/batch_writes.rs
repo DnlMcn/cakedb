@@ -2,11 +2,11 @@ use std::collections::BTreeMap;
 
 use redb::{ReadableTable, TableDefinition};
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
+impl CakeDb {
     /// Tries to add all key-value pairs to the given table.
     ///
     /// Values whose keys are already present are not modified.

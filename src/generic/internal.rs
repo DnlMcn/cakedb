@@ -1,13 +1,13 @@
 use anyhow::anyhow;
 use redb::{
-    MultimapTableDefinition, ReadOnlyMultimapTable, ReadOnlyTable, TableDefinition, TableError,
+    MultimapTableDefinition, ReadOnlyMultimapTable, ReadOnlyTable, ReadableDatabase, TableDefinition, TableError
 };
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
+impl CakeDb {
     /// Opens the given table as read-only and returns it.
     pub(super) fn read_table<K, V>(
         &self,

@@ -9,9 +9,8 @@ use std::{
 };
 
 use redb::{Database};
-use save::EzSavepoint;
+use save::CakeSavepoint;
 use tempfile::NamedTempFile;
-
 
 /// Represents a high-level database encapsulation that handles interactions with the underlying storage.
 ///
@@ -19,7 +18,7 @@ use tempfile::NamedTempFile;
 ///
 /// # Examples
 /// ```
-/// use ezdb::prelude::*;
+/// use cakedb::prelude::*;
 /// use std::fmt::Debug;
 ///
 /// #[derive(Serialize, Deserialize, Encode, Decode, Debug)]
@@ -39,7 +38,7 @@ use tempfile::NamedTempFile;
 ///
 /// fn main() -> Result<(), Box<dyn std::error::Error>> {
 ///     // In production, use the `new` method instead of `new_test_db`.
-///     let mut db = EzDb::new_test_db()?;
+///     let mut db = CakeDb::new_test_db()?;
 ///
 ///     // The savepoint is stored inside the struct so it's not dropped;
 ///     // we only receive the key.
@@ -70,14 +69,16 @@ use tempfile::NamedTempFile;
 ///     Ok(())
 /// }
 /// ```
-pub struct EzDb {
+pub struct CakeDb {
     inner: Database,
-    savepoints: BTreeMap<usize, EzSavepoint>,
+    savepoints: BTreeMap<usize, CakeSavepoint>,
     tempfile_path: Option<PathBuf>,
 }
 
-impl EzDb {
+impl CakeDb {
     /// Initializes the database, or creates it if it doesn't exist.
+    ///
+    /// If you are just testing the crate, you can also use the `new_test_db` method, or use your PC's default Data path by calling the provided `data_local_path` function.
     pub fn new(path: impl AsRef<Path>) -> Result<Self, redb::DatabaseError> {
         Ok(Self {
             inner: Database::create(path)?,
@@ -86,7 +87,7 @@ impl EzDb {
         })
     }
 
-    /// Initializes a new database in a tempfile.
+    /// Initializes a fresh database in a tempfile.
     pub fn new_test_db() -> Result<Self, redb::DatabaseError> {
         let path = NamedTempFile::with_suffix(".redb")
             .unwrap()
@@ -100,16 +101,12 @@ impl EzDb {
         })
     }
 
-    /// Provides a reference to the inner `Database` struct.
-    ///
-    /// This method is unnecessary for most use cases; using the methods provided for `EzDb` is encouraged.
+    /// Provides a reference to the inner `Database` struct. Use this if you need finer control.
     pub fn database(&self) -> &Database {
         &self.inner
     }
 
-    /// Provides a mutable reference to the inner `Database` struct.
-    ///
-    /// This method is unnecessary for most use cases; using the methods provided for `EzDb` is encouraged.
+    /// Provides a mutable reference to the inner `Database` struct. Use this if you need finer control.
     pub fn mut_database(&mut self) -> &mut Database {
         &mut self.inner
     }
@@ -121,7 +118,7 @@ impl EzDb {
         self.inner.compact()
     }
 
-    /// Returns the path to the file this database is stored in.
+    /// Returns the path to the tempfile this database is stored in.
     ///
     /// Should only return `Some` for test instances.
     pub fn tempfile_path(&self) -> Option<&PathBuf> {

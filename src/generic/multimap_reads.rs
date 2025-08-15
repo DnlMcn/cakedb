@@ -2,11 +2,11 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use redb::{MultimapTableDefinition, ReadableMultimapTable};
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
+impl CakeDb {
     /// Returns all values mapped to the given key.
     pub fn multimap_get<K, V>(
         &self,

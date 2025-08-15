@@ -1,10 +1,10 @@
 use redb::{ReadableTable, TableDefinition};
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
+impl CakeDb {
     /// Tries to add a key-value pair to the table.
     ///
     /// Returns whether the key was newly added. That is:
@@ -41,6 +41,8 @@ impl EzDb {
     /// Inserts a key-value pair into the table.
     ///
     /// If the map had this key present, its value will be overwritten by the new value.
+    /// 
+    /// Returns the old value.
     pub fn insert<K, V>(
         &mut self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
@@ -63,11 +65,11 @@ impl EzDb {
         Ok(old_value)
     }
 
-    /// Applies `edit` to the value paired with the given key, replacing the old value.
+    /// Applies `edit` to the given entry, replacing the old value.
     ///
     /// Returns the old value if it existed.
     ///
-    /// Returns `Err` if the key isn't found in the given table.
+    /// Returns an `Err` if the key isn't found in the given table.
     pub fn edit<K, V>(
         &mut self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,

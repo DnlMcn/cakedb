@@ -1,10 +1,10 @@
 use redb::{MultimapTableDefinition, ReadableMultimapTable};
 
-use crate::{bincode_wrapper::Bincode, EzDb};
+use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
 
-impl EzDb {
+impl CakeDb {
     /// Inserts a key-value pair into the table.
     ///
     /// Returns `true` if the key-value pair was present.

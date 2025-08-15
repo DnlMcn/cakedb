@@ -1,5 +1,6 @@
 [package]
-name = "ezdb"
+# TODO PACKAGE NAME
+name = "cakedb"
 version = "0.1.0"
 edition = "2021"
 authors = ["DnlMcn <haomakk.himself@gmail.com>"]
@@ -10,11 +11,12 @@ keywords = ["database", "embedded", "easy", "redb"]
 categories = ["database-interfaces"]
 
 [dependencies]
-anyhow = "1.0.98"
+anyhow = "1.0.99"
 bincode = "2.0.1"
 derive_more = { version = "2.0.1", features = ["debug"] }
 directories = "6.0.0"
-redb = "2.6.0"
+nanoid = "0.4.0"
+redb = "3.0.0"
 serde = "1.0.219"
 serde_derive = "1.0.219"
 tempfile = "3.20.0"
