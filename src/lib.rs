@@ -2,6 +2,7 @@ pub mod bincode_wrapper;
 pub mod generic;
 pub mod prelude;
 pub mod save;
+mod test;
 
 use std::{
     collections::BTreeMap,
@@ -48,8 +49,8 @@ use tempfile::NamedTempFile;
 ///     db.insert(TABLE, &1, var)?;
 ///     assert!(db.get(TABLE, &1)?.is_some());
 ///
-///     // Edits and predicates use closures.
-///     db.edit(TABLE, &1, |v| v.b.push_str(" (edited)"))?;
+///     // Updates and predicates use closures.
+///     db.update(TABLE, &1, |v| v.b.push_str(" (edited)"))?;
 ///     assert_eq!(db.get(TABLE, &1)?.unwrap().b, "two (edited)");
 ///
 ///     let pairs = vec![
@@ -89,7 +90,7 @@ impl CakeDb {
         })
     }
 
-    /// Initializes a fresh database in a tempfile. Good for testing.
+    /// Initializes a fresh database in a tempfile.
     pub fn new_temp() -> Result<Self, redb::DatabaseError> {
         let path = NamedTempFile::with_suffix(".redb")
             .unwrap()
@@ -116,6 +117,9 @@ impl CakeDb {
     /// Compacts the database file.
     ///
     /// Returns `true` if compaction was performed, and `false` if no further compaction was possible.
+    ///
+    /// If you get an error due to a transaction in progress, it's probably because you have savepoints active.
+    /// Clear them and try again.
     pub fn compact(&mut self) -> Result<bool, redb::CompactionError> {
         self.inner.compact()
     }

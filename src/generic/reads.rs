@@ -222,7 +222,7 @@ impl CakeDb {
     }
 
     /// Returns all key-value pairs in the given range of keys
-    pub fn range<K, V, KR>(
+    pub fn range<K, V>(
         &self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
         range: impl RangeBounds<K>,
