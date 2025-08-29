@@ -38,8 +38,8 @@ use tempfile::NamedTempFile;
 ///         TableDefinition::new("test_table");
 ///
 /// fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     // In production, use the `new` method instead of `new_test_db`.
-///     let mut db = CakeDb::new_test_db()?;
+///     // In production, use the `new` method instead of `new_temp`.
+///     let mut db = CakeDb::new_temp()?;
 ///
 ///     // The savepoint is stored inside the struct, we only receive its key.
 ///     let save_key = db.savepoint()?;
@@ -89,8 +89,8 @@ impl CakeDb {
         })
     }
 
-    /// Initializes a fresh database in a tempfile.
-    pub fn new_test_db() -> Result<Self, redb::DatabaseError> {
+    /// Initializes a fresh database in a tempfile. Good for testing.
+    pub fn new_temp() -> Result<Self, redb::DatabaseError> {
         let path = NamedTempFile::with_suffix(".redb")
             .unwrap()
             .path()
