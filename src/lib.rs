@@ -8,7 +8,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use redb::Database;
 use save::CakeSavepoint;
 use tempfile::NamedTempFile;
 
@@ -71,7 +70,7 @@ use tempfile::NamedTempFile;
 /// }
 /// ```
 pub struct CakeDb {
-    inner: Database,
+    inner: redb::Database,
     savepoints: BTreeMap<usize, CakeSavepoint>,
     tempfile_path: Option<PathBuf>,
 }
@@ -84,7 +83,7 @@ impl CakeDb {
     /// [`data_local_path`](crate::data_local_path).
     pub fn new(path: impl AsRef<Path>) -> Result<Self, redb::DatabaseError> {
         Ok(Self {
-            inner: Database::create(path)?,
+            inner: redb::Database::create(path)?,
             savepoints: BTreeMap::new(),
             tempfile_path: None,
         })
@@ -98,19 +97,19 @@ impl CakeDb {
             .to_path_buf();
 
         Ok(Self {
-            inner: Database::create(&path)?,
+            inner: redb::Database::create(&path)?,
             savepoints: BTreeMap::new(),
             tempfile_path: Some(path),
         })
     }
 
     /// Provides a reference to the inner `Database` struct. Use this if you need finer control.
-    pub fn database(&self) -> &Database {
+    pub fn database(&self) -> &redb::Database {
         &self.inner
     }
 
     /// Provides a mutable reference to the inner `Database` struct. Use this if you need finer control.
-    pub fn mut_database(&mut self) -> &mut Database {
+    pub fn mut_database(&mut self) -> &mut redb::Database {
         &mut self.inner
     }
 
