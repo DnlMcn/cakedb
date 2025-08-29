@@ -91,7 +91,6 @@ impl CakeDb {
     /// Deletes the given table.
     ///
     /// Returns `true` if the table existed.
-    #[must_use]
     pub fn delete_table<K, V>(
         &self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,

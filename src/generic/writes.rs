@@ -14,7 +14,6 @@ impl CakeDb {
     /// Returns whether the key was newly added. That is:
     /// - If this key **wasn't** present, adds the key-value pair and returns `true`.
     /// - If this key **was** present, returns `false` and does not modify the table.
-    #[must_use]
     pub fn try_add<K, V>(
         &mut self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,

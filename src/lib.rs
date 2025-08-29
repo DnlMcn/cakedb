@@ -3,6 +3,7 @@
 //! CakeDb provides a lightweight wrapper around the `redb` key-value store
 //! with conveniences such as automatic serialization and in-memory savepoints.
 
+pub mod error;
 pub mod bincode_wrapper;
 mod generic;
 pub mod prelude;
@@ -79,7 +80,6 @@ use tempfile::NamedTempFile;
 ///     Ok(())
 /// }
 /// ```
-#[derive(Debug)]
 pub struct CakeDb {
     inner: redb::Database,
     savepoints: BTreeMap<usize, CakeSavepoint>,
@@ -131,14 +131,13 @@ impl CakeDb {
     ///
     /// If you get an error due to a transaction in progress, it's probably because you have savepoints active.
     /// Clear them and try again.
-    #[must_use]
     pub fn compact(&mut self) -> Result<bool, redb::CompactionError> {
         self.inner.compact()
     }
 
     /// Returns the path to the tempfile this database is stored in.
     ///
-    /// Should only return `Some` for test instances.
+    /// Should only return `Some` for instances created with `new_temp`.
     pub fn tempfile_path(&self) -> Option<&PathBuf> {
         self.tempfile_path.as_ref()
     }

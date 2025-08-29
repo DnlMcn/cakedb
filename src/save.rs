@@ -1,6 +1,6 @@
 //! Utilities for managing in-memory savepoints.
 
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, fmt::Display};
 
 use redb::Savepoint;
 use time::UtcDateTime;
@@ -10,12 +10,20 @@ use crate::CakeDb;
 // TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 /// Metadata for a savepoint stored in memory.
-#[derive(Debug)]
+///
+/// Because redb's `Savepoint` doesn't implement `Debug`, this struct also can't.
+/// However, it does implement `Display`, printing only the timestamp.
 pub struct CakeSavepoint {
     /// The underlying `redb` savepoint.
     savepoint: Savepoint,
     /// When the savepoint was created.
     creation_time: UtcDateTime,
+}
+
+impl Display for CakeSavepoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.creation_time)
+    }
 }
 
 impl CakeSavepoint {

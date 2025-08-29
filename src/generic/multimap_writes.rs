@@ -12,7 +12,6 @@ impl CakeDb {
     /// Adds a given value to the mapping of the key.
     ///
     /// Returns `true` if the key-value pair was present.
-    #[must_use]
     pub fn multimap_insert<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
@@ -38,7 +37,6 @@ impl CakeDb {
     /// Adds the given values to the mapping of the key.
     ///
     /// Returns `true` if the key already had at least one value mapped.
-    #[must_use]
     pub fn multimap_insert_values<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
@@ -98,7 +96,6 @@ impl CakeDb {
     /// Regardless of overlap with new values, all old values will be removed.
     ///
     /// Returns `true` if the key had at least one value mapped.
-    #[must_use]
     pub fn multimap_assign<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
@@ -131,7 +128,6 @@ impl CakeDb {
     /// Removes a given value from the mapping of the key.
     ///
     /// Returns `true` if the value was present.
-    #[must_use]
     pub fn multimap_remove<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
@@ -208,7 +204,6 @@ impl CakeDb {
     /// Deletes the given multimap table.
     ///
     /// Returns `true` if the table existed.
-    #[must_use]
     pub fn delete_multimap_table<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,

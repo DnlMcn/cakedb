@@ -25,7 +25,6 @@ impl CakeDb {
     }
 
     /// Returns `true` if the table contains the given key.
-    #[must_use]
     pub fn contains_key<K, V>(
         &self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
