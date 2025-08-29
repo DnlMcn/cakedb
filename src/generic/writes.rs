@@ -1,8 +1,12 @@
+//! Basic write operations on key-value tables.
+
 use redb::{ReadableTable, TableDefinition};
 
 use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
+
+// TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 impl CakeDb {
     /// Tries to add a key-value pair to the table.
@@ -10,6 +14,7 @@ impl CakeDb {
     /// Returns whether the key was newly added. That is:
     /// - If this key **wasn't** present, adds the key-value pair and returns `true`.
     /// - If this key **was** present, returns `false` and does not modify the table.
+    #[must_use]
     pub fn try_add<K, V>(
         &mut self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
