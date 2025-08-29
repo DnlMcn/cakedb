@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, ops::RangeBounds};
 
 use redb::{ReadableTable, TableDefinition};
 
@@ -161,6 +161,51 @@ impl CakeDb {
             .collect())
     }
 
+    /// Returns the first pair in the table.
+    pub fn first<K, V>(
+        &self,
+        table_def: TableDefinition<Bincode<K>, Bincode<V>>,
+    ) -> Result<Option<(K, V)>, Box<dyn std::error::Error>>
+    where
+        K: DbKey,
+        V: DbValue,
+    {
+        Ok(self
+            .read_table(table_def)?
+            .first()?
+            .map(|(kg, vg)| (kg.value(), vg.value())))
+    }
+
+    /// Returns the last pair in the table.
+    pub fn last<K, V>(
+        &self,
+        table_def: TableDefinition<Bincode<K>, Bincode<V>>,
+    ) -> Result<Option<(K, V)>, Box<dyn std::error::Error>>
+    where
+        K: DbKey,
+        V: DbValue,
+    {
+        Ok(self
+            .read_table(table_def)?
+            .last()?
+            .map(|(kg, vg)| (kg.value(), vg.value())))
+    }
+
+    /// Returns the first key in the given table.
+    pub fn first_key<K, V>(
+        &self,
+        table_def: TableDefinition<Bincode<K>, Bincode<V>>,
+    ) -> Result<Option<K>, Box<dyn std::error::Error>>
+    where
+        K: DbKey,
+        V: DbValue,
+    {
+        Ok(self
+            .read_table(table_def)?
+            .first()?
+            .map(|(kg, _)| kg.value()))
+    }
+
     /// Returns the last key in the given table.
     pub fn last_key<K, V>(
         &self,
@@ -174,5 +219,23 @@ impl CakeDb {
             .read_table(table_def)?
             .last()?
             .map(|(kg, _)| kg.value()))
+    }
+
+    /// Returns all key-value pairs in the given range of keys
+    pub fn range<K, V, KR>(
+        &self,
+        table_def: TableDefinition<Bincode<K>, Bincode<V>>,
+        range: impl RangeBounds<K>,
+    ) -> Result<BTreeMap<K, V>, Box<dyn std::error::Error>>
+    where
+        K: DbKey,
+        V: DbValue,
+    {
+        Ok(self
+            .read_table(table_def)?
+            .range(range)?
+            .flatten()
+            .map(|(kg, vg)| (kg.value(), vg.value()))
+            .collect())
     }
 }

@@ -5,7 +5,7 @@ use crate::{bincode_wrapper::Bincode, CakeDb};
 use super::traits::{DbKey, DbValue};
 
 impl CakeDb {
-    /// Inserts a key-value pair into the table.
+    /// Adds a given value to the mapping of the key.
     ///
     /// Returns `true` if the key-value pair was present.
     pub fn multimap_insert<K, V>(
@@ -30,7 +30,7 @@ impl CakeDb {
         Ok(existed)
     }
 
-    /// Inserts the values into the mapping of the key.
+    /// Adds the given values to the mapping of the key.
     ///
     /// Returns `true` if the key already had at least one value mapped.
     pub fn multimap_insert_values<K, V>(
@@ -62,10 +62,12 @@ impl CakeDb {
     }
 
     /// Inserts each value of each key into the table.
+    ///
+    /// `data` can be any data structure that can be iterated in the same way as a `Vec<(K, Vec<V>)>` or a `BTreeMap<K, Vec<V>>`.
     pub fn multimap_batch_insert<K, V>(
         &mut self,
         table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
-        map: impl IntoIterator<Item = (K, impl IntoIterator<Item = V>)>,
+        data: impl IntoIterator<Item = (K, impl IntoIterator<Item = V>)>,
     ) -> Result<(), Box<dyn std::error::Error>>
     where
         K: DbKey + Clone,
@@ -74,7 +76,7 @@ impl CakeDb {
         let transaction = self.inner.begin_write()?;
         {
             let mut table = transaction.open_multimap_table(table_def)?;
-            for (k, v) in map {
+            for (k, v) in data {
                 for v in v {
                     table.insert(&k, v)?;
                 }
@@ -86,6 +88,8 @@ impl CakeDb {
     }
 
     /// Assigns `values` to the mappings of the key, overwriting any previous values.
+    ///
+    /// Regardless of overlap with new values, all old values will be removed.
     ///
     /// Returns `true` if the key had at least one value mapped.
     pub fn multimap_assign<K, V>(
@@ -140,6 +144,34 @@ impl CakeDb {
         transaction.commit()?;
 
         Ok(existed)
+    }
+
+    /// Removes all values from a key in the table.
+    ///
+    /// Returns the removed values in ascending order.
+    pub fn multimap_remove_all<K, V>(
+        &mut self,
+        table_def: MultimapTableDefinition<Bincode<K>, Bincode<V>>,
+        key: &K,
+    ) -> Result<Vec<V>, Box<dyn std::error::Error>>
+    where
+        K: DbKey,
+        V: DbValue + Ord,
+    {
+        let values: Vec<V>;
+
+        let transaction = self.inner.begin_write()?;
+        {
+            let mut table = transaction.open_multimap_table(table_def)?;
+            values = table
+                .remove_all(key)?
+                .flatten()
+                .map(|v| v.value())
+                .collect();
+        }
+        transaction.commit()?;
+
+        Ok(values)
     }
 
     /// Clears the contents of the given table, removing all key-value mappings.

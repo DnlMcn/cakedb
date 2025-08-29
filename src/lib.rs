@@ -1,7 +1,7 @@
-pub mod save;
 pub mod bincode_wrapper;
 pub mod generic;
 pub mod prelude;
+pub mod save;
 
 use std::{
     collections::BTreeMap,
@@ -80,7 +80,7 @@ impl CakeDb {
     /// Initializes the database, or creates it if it doesn't exist.
     ///
     /// If you're just testing the crate, consider the [`new_test_db`](Self::new_test_db)
-    /// method, or obtain your machine's default data path with
+    /// method, or get your machine's default data path with
     /// [`data_local_path`](crate::data_local_path).
     pub fn new(path: impl AsRef<Path>) -> Result<Self, redb::DatabaseError> {
         Ok(Self {

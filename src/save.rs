@@ -43,6 +43,8 @@ impl CakeDb {
 
     /// Loads a savepoint from its `key`.
     ///
+    /// This will invalidate any savepoints created after the savepoint being loaded.
+    ///
     /// Returns an error if there's no savepoint with a matching `key`.
     pub fn load_savepoint(&mut self, key: usize) -> Result<(), Box<dyn std::error::Error>> {
         let Some(save) = self.savepoints.get(&key) else {

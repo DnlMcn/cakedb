@@ -67,10 +67,10 @@ impl CakeDb {
 
     /// Applies `edit` to the given entry, replacing the old value.
     ///
-    /// Returns the old value if it existed.
+    /// Returns the old value.
     ///
     /// Returns an `Err` if the key isn't found in the given table.
-    pub fn edit<K, V>(
+    pub fn update<K, V>(
         &mut self,
         table_def: TableDefinition<Bincode<K>, Bincode<V>>,
         key: &K,
