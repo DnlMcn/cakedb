@@ -2,6 +2,8 @@ pub mod bincode_wrapper;
 pub mod generic;
 pub mod prelude;
 pub mod save;
+#[cfg(test)]
+mod test;
 
 use std::{
     collections::BTreeMap,
