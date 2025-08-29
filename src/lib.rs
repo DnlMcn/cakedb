@@ -2,7 +2,6 @@ pub mod bincode_wrapper;
 pub mod generic;
 pub mod prelude;
 pub mod save;
-#[cfg(test)]
 mod test;
 
 use std::{
@@ -40,8 +39,8 @@ use tempfile::NamedTempFile;
 ///         TableDefinition::new("test_table");
 ///
 /// fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     // In production, use the `new` method instead of `new_test_db`.
-///     let mut db = CakeDb::new_test_db()?;
+///     // In production, use the `new` method instead of `new_temp`.
+///     let mut db = CakeDb::new_temp()?;
 ///
 ///     // The savepoint is stored inside the struct, we only receive its key.
 ///     let save_key = db.savepoint()?;
@@ -50,8 +49,8 @@ use tempfile::NamedTempFile;
 ///     db.insert(TABLE, &1, var)?;
 ///     assert!(db.get(TABLE, &1)?.is_some());
 ///
-///     // Edits and predicates use closures.
-///     db.edit(TABLE, &1, |v| v.b.push_str(" (edited)"))?;
+///     // Updates and predicates use closures.
+///     db.update(TABLE, &1, |v| v.b.push_str(" (edited)"))?;
 ///     assert_eq!(db.get(TABLE, &1)?.unwrap().b, "two (edited)");
 ///
 ///     let pairs = vec![
@@ -92,7 +91,7 @@ impl CakeDb {
     }
 
     /// Initializes a fresh database in a tempfile.
-    pub fn new_test_db() -> Result<Self, redb::DatabaseError> {
+    pub fn new_temp() -> Result<Self, redb::DatabaseError> {
         let path = NamedTempFile::with_suffix(".redb")
             .unwrap()
             .path()
@@ -118,6 +117,9 @@ impl CakeDb {
     /// Compacts the database file.
     ///
     /// Returns `true` if compaction was performed, and `false` if no further compaction was possible.
+    ///
+    /// If you get an error due to a transaction in progress, it's probably because you have savepoints active.
+    /// Clear them and try again.
     pub fn compact(&mut self) -> Result<bool, redb::CompactionError> {
         self.inner.compact()
     }

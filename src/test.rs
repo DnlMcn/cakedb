@@ -62,7 +62,7 @@ const MULTI_TABLE: MultimapTableDefinition<Bincode<String>, Bincode<ComplexRecor
 
 #[test]
 fn insert_and_get() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     db.insert(TABLE, &1, TestStruct::new(10, "ten"))?;
     let value = db.get(TABLE, &1)?.unwrap();
     assert_eq!(value.a, 10);
@@ -72,7 +72,7 @@ fn insert_and_get() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn batch_insert_and_filter() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let data = vec![
         (1, TestStruct::new(1, "one")),
         (2, TestStruct::new(2, "two")),
@@ -86,7 +86,7 @@ fn batch_insert_and_filter() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn savepoint_and_restore() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let key = db.savepoint()?;
     db.insert(TABLE, &1, TestStruct::new(4, "four"))?;
     assert!(db.get(TABLE, &1)?.is_some());
@@ -97,7 +97,7 @@ fn savepoint_and_restore() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn try_add_contains_update_remove() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let rec = ComplexRecord::new(1, "alpha", &["x", "y"]);
     assert!(db.try_add(COMPLEX_TABLE, &1, rec.clone())?);
     assert!(!db.try_add(COMPLEX_TABLE, &1, rec.clone())?);
@@ -114,7 +114,7 @@ fn try_add_contains_update_remove() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn query_helpers() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let records = vec![
         (1, ComplexRecord::new(1, "one", &["red", "blue"])),
         (2, ComplexRecord::new(2, "two", &["green"])),
@@ -145,7 +145,7 @@ fn query_helpers() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn batch_update_clear_delete() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let records = vec![
         (1, ComplexRecord::new(1, "one", &[])),
         (2, ComplexRecord::new(2, "two", &[])),
@@ -163,7 +163,7 @@ fn batch_update_clear_delete() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn multimap_operations() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     let r1 = ComplexRecord::new(1, "one", &["a"]);
     let r2 = ComplexRecord::new(2, "two", &["b"]);
     let r3 = ComplexRecord::new(3, "three", &["c"]);
@@ -197,7 +197,7 @@ fn multimap_operations() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn savepoint_clear_and_compact() -> Result<(), Box<dyn std::error::Error>> {
-    let mut db = CakeDb::new_test_db()?;
+    let mut db = CakeDb::new_temp()?;
     assert!(db.tempfile_path().is_some());
     db.compact()?;
     let _ = db.savepoint()?;
