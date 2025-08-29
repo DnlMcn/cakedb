@@ -1,3 +1,5 @@
+//! Read operations for multimap tables.
+
 use std::collections::{BTreeMap, BTreeSet};
 
 use redb::{MultimapTableDefinition, ReadableMultimapTable};
@@ -5,6 +7,8 @@ use redb::{MultimapTableDefinition, ReadableMultimapTable};
 use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
+
+// TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 impl CakeDb {
     /// Returns all values mapped to the given key.

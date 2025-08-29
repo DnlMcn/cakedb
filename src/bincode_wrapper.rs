@@ -1,3 +1,5 @@
+//! Bincode-backed wrapper types for use with `redb`.
+
 use std::any::type_name;
 use std::cmp::Ordering;
 use std::fmt::Debug;
@@ -35,6 +37,7 @@ where
         Self: 'a,
     {
         bincode::decode_from_slice(data, config::standard())
+            // TODO: replace `expect` with proper error handling.
             .expect("failed to deserialize bincode value")
             .0
     }
@@ -44,6 +47,7 @@ where
         Self: 'a + 'b,
     {
         bincode::encode_to_vec(value, config::standard())
+            // TODO: replace `expect` with proper error handling.
             .expect("failed to serialize bincode value")
     }
 

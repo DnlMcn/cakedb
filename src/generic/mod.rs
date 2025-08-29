@@ -1,3 +1,5 @@
+//! Generic database helpers shared across the crate.
+
 pub mod batch_writes;
 pub mod internal;
 pub mod multimap_reads;
