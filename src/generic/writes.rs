@@ -1,8 +1,12 @@
+//! Basic write operations on key-value tables.
+
 use redb::{ReadableTable, TableDefinition};
 
 use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
+
+// TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 impl CakeDb {
     /// Tries to add a key-value pair to the table.

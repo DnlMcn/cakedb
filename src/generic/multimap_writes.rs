@@ -1,8 +1,12 @@
+//! Write operations for multimap tables.
+
 use redb::{MultimapTableDefinition, ReadableMultimapTable};
 
 use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
+
+// TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 impl CakeDb {
     /// Adds a given value to the mapping of the key.

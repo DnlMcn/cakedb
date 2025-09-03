@@ -1,15 +1,25 @@
+#![forbid(unsafe_code)]
+#![warn(missing_docs)]
+//! CakeDb provides a lightweight wrapper around the `redb` key-value store
+//! with conveniences such as automatic serialization and in-memory savepoints.
+
+pub mod error;
 pub mod bincode_wrapper;
-pub mod generic;
+mod generic;
 pub mod prelude;
-pub mod save;
+mod save;
 mod test;
+
+// TODO: introduce a structured error type instead of using `Box<dyn std::error::Error>`.
+
+pub use generic::traits::{DbKey, DbValue};
+pub use save::CakeSavepoint;
 
 use std::{
     collections::BTreeMap,
     path::{Path, PathBuf},
 };
 
-use save::CakeSavepoint;
 use tempfile::NamedTempFile;
 
 /// Represents a high-level database encapsulation that handles interactions with the underlying storage.
@@ -92,6 +102,7 @@ impl CakeDb {
 
     /// Initializes a fresh database in a tempfile.
     pub fn new_temp() -> Result<Self, redb::DatabaseError> {
+        // TODO: handle potential errors from `NamedTempFile::with_suffix` instead of unwrapping.
         let path = NamedTempFile::with_suffix(".redb")
             .unwrap()
             .path()
@@ -126,7 +137,7 @@ impl CakeDb {
 
     /// Returns the path to the tempfile this database is stored in.
     ///
-    /// Should only return `Some` for test instances.
+    /// Should only return `Some` for instances created with `new_temp`.
     pub fn tempfile_path(&self) -> Option<&PathBuf> {
         self.tempfile_path.as_ref()
     }

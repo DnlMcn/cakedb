@@ -1,0 +1,2 @@
+//! Error enum definitions
+

@@ -1,3 +1,5 @@
+//! Read operations on key-value tables.
+
 use std::{collections::BTreeMap, ops::RangeBounds};
 
 use redb::{ReadableTable, TableDefinition};
@@ -5,6 +7,8 @@ use redb::{ReadableTable, TableDefinition};
 use crate::{bincode_wrapper::Bincode, CakeDb};
 
 use super::traits::{DbKey, DbValue};
+
+// TODO: replace `Box<dyn std::error::Error>` with a structured error type.
 
 impl CakeDb {
     /// Returns the value if it exists.
